@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GP OTP Sender</title>
+</head>
+<body>
+    <h2>OTP পাঠান</h2>
+    <input type="text" id="number" placeholder="017xxxxxxxx">
+    <button onclick="sendOTP()">OTP পাঠান</button>
+    <p id="result"></p>
+
+    <script>
+        function sendOTP() {
+            const number = document.getElementById('number').value;
+            const result = document.getElementById('result');
+            
+            if(!number) {
+                result.textContent = "নাম্বার লিখুন";
+                return;
+            }
+
+            result.textContent = "OTP পাঠানো হচ্ছে...";
+            
+            const data = new URLSearchParams();
+            data.append('msisdn', number);
+
+            fetch('https://webloginda.grameenphone.com/backend/api/v1/otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'User-Agent': 'Mozilla/5.0'
+                },
+                body: data
+            })
+            .then(response => response.json())
+            .then(data => {
+                result.textContent = "OTP SENT SUCCESS: " + JSON.stringify(data);
+            })
+            .catch(error => {
+                result.textContent = "something was wrong: " + error.message;
+            });
+        }
+    </script>
+</body>
+</html>
